@@ -26,4 +26,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: Pankswork/weather-app:latest
+        tags: pankswork/weather-app:latest
