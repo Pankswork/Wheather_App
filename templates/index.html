@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("{{ url_for('static', filename=background) }}");
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            padding: 20px;
+            display: inline-block;
+            width: 90%;
+            max-width: 600px;
+        }
+        table {
+            margin: auto;
+            margin-top: 20px;
+            background: white;
+            color: black;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            border-radius: 5px;
+            border: none;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+        }
+	.dark-theme {
+    background-color: #111 !important;
+    background-image: none !important;
+    color: white !important;
+}
+.dark-theme .container {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+.dark-theme table {
+    background: #333;
+    color: white;
+}
+.dark-theme input[type="text"],
+.dark-theme input[type="submit"] {
+    background-color: #444;
+    color: white;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label style="float: right; margin-bottom: 10px;">
+    🌗 Dark Mode
+    <input type="checkbox" id="toggleDark" onchange="toggleTheme()">
+</label>
+
+        <h1>Weather Search</h1>
+        <form method="POST">
+            <input type="text" name="city" placeholder="Enter city name" required>
+            <input type="submit" value="Get Weather">
+        </form>
+
+        {% if weather %}
+            {% if weather.error %}
+                <p class="error">{{ weather.error }}</p>
+            {% else %}
+                <h2>{{ weather.city }}</h2>
+                <p>Temperature: {{ weather.temperature }}</p>
+                <p>Condition: {{ weather.description }}</p>
+            {% endif %}
+        {% endif %}
+
+        <h2>Search History (Latest 10)</h2>
+
+<input type="text" id="historySearch" placeholder="Filter by city..." onkeyup="filterHistory()">
+
+<table id="historyTable">
+    <tr>
+        <th>City</th>
+        <th>Temperature</th>
+        <th>Description</th>
+        <th>Time</th>
+    </tr>
+    {% for entry in history %}
+    <tr>
+        <td>{{ entry[0] }}</td>
+        <td>{{ entry[1] }}</td>
+        <td>{{ entry[2] }}</td>
+        <td>{{ entry[3] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+function filterHistory() {
+    const input = document.getElementById("historySearch");
+    const filter = input.value.toLowerCase();
+    const table = document.getElementById("historyTable");
+    const tr = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < tr.length; i++) {
+        const td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+            const city = td.textContent || td.innerText;
+            tr[i].style.display = city.toLowerCase().includes(filter) ? "" : "none";
+        }
+    }
+}
+function toggleTheme() {
+    const body = document.body;
+    const checkbox = document.getElementById("toggleDark");
+    body.classList.toggle("dark-theme");
+
+    if (body.classList.contains("dark-theme")) {
+        localStorage.setItem("theme", "dark");
+    } else {
+        localStorage.setItem("theme", "light");
+    }
+}
+window.onload = function () {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark-theme");
+        document.getElementById("toggleDark").checked = true;
+    }
+};
+</script>
+
+    </div>
+</body>
+</html>
