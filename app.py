@@ -2,8 +2,10 @@ from dotenv import load_dotenv
 from flask import Flask, request, render_template
 import requests
 import os
+import time
 import mysql.connector
 from datetime import datetime
+from mysql.connector import Error
 
 app = Flask(__name__)
 
@@ -14,18 +16,23 @@ API_KEY = os.getenv("WEATHER_API_KEY")
 BASE_URL = "http://api.weatherapi.com/v1/current.json"
 
 # MySQL connection using .env variables
-try:
-    conn = mysql.connector.connect(
-        host=os.getenv("DB_HOST"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME")
-    )
-    cursor = conn.cursor()
-except mysql.connector.Error as err:
-    print("Database connection error:", err)
+for attempt in range(10):
+    try:
+        conn = mysql.connector.connect(
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME")
+        )
+        cursor = conn.cursor()
+        print("✅ Connected to MySQL successfully.")
+        break
+    except Error as err:
+        print(f"⏳ Attempt {attempt + 1}: Database connection error: {err}")
+        time.sleep(2)
+else:
+    print("❌ Could not connect to MySQL after multiple attempts.")
     exit(1)
-
 
 @app.route("/", methods=["GET", "POST"])
 def index():
