@@ -25,13 +25,13 @@ for attempt in range(10):
             database=os.getenv("DB_NAME")
         )
         cursor = conn.cursor()
-        print("✅ Connected to MySQL successfully.")
+        print(" Connected to MySQL successfully.")
         break
     except Error as err:
-        print(f"⏳ Attempt {attempt + 1}: Database connection error: {err}")
+        print(f"Attempt {attempt + 1}: Database connection error: {err}")
         time.sleep(2)
 else:
-    print("❌ Could not connect to MySQL after multiple attempts.")
+    print("Could not connect to MySQL after multiple attempts.")
     exit(1)
 
 @app.route("/", methods=["GET", "POST"])
