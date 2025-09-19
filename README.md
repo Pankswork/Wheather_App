@@ -34,50 +34,73 @@ Secrets like DOCKERHUB_USERNAME and DOCKERHUB_TOKEN are stored in GitHub Secrets
 .env is not uploaded — each user provides their own.
 
 🖥️ Part 2 – User Guide (How to Run)
-1️⃣ Clone Repo
-git clone https://github.com/<your-username>/weather-app.git
-cd weather-app
-
-2️⃣ Create .env
-
-Create a .env file in the root directory:
 
 # Weather API key from https://www.weatherapi.com/
 WEATHER_API_KEY=your_api_key_here
 
-# MySQL credentials
+1. Clone the repository
+git clone https://github.com/<your-username>/<your-repo>.git
+cd <your-repo>
+
+2. Create a .env file
+
+Copy the example below into a .env file in the root directory:
+
+# API key
+WEATHER_API_KEY=your_api_key_here
+
+# Database settings
 DB_HOST=db
-DB_USER=root
-DB_PASSWORD=examplepassword
+DB_USER=app_user
+DB_PASSWORD=your_password_here
 DB_NAME=weather_app
 
-3️⃣ Run with Docker Compose
+
+⚠️ Make sure you replace your_api_key_here with your OpenWeather API key.
+
+3. Build and start the containers
 docker-compose up --build
 
 
-This will:
+The app will be available at 👉 http://localhost:5000
 
-Start MySQL on port 3306
+🐳 Managing Containers
+Stop and Remove Containers
+# Stop a container
+docker stop <container_name_or_id>
 
-Start Flask app on port 5000
-
-4️⃣ Open App
-
-Go to:
-👉 http://localhost:5000
-
-Enter a city name and get live weather updates.
-
-5️⃣ Example
-POST / with city = "London"
+# Remove a container
+docker rm <container_name_or_id>
 
 
-Response in app:
+Example:
 
-City: London
-Temperature: 19 °C
-Description: Cloudy
+docker stop mysql-db
+docker rm mysql-db
 
-6️⃣ Check History
+Force Remove
+docker rm -f mysql-db
+
+Reset the Database (fresh start)
+# Stop & remove MySQL
+docker rm -f mysql-db
+
+# Remove the database volume (⚠️ deletes all data)
+docker volume rm pythonapp_db_data
+
+# Rebuild and start again
+docker-compose up --build
+
+📦 Project Structure
+.
+├── app.py               # Flask application
+├── requirements.txt     # Python dependencies
+├── Dockerfile           # Docker image for Flask app
+├── docker-compose.yml   # Compose configuration
+├── init.sql             # MySQL initialization script
+└── .env                 # Environment variables (not committed)
 
 Visit 👉 http://localhost:5000/history
+
+
+
