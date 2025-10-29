@@ -95,6 +95,7 @@ docker-compose up --build
 ```
 
 ### Project Structure
+```bash
 .
 ├── app.py               # Flask application
 ├── requirements.txt     # Python dependencies
@@ -102,6 +103,7 @@ docker-compose up --build
 ├── docker-compose.yml   # Compose configuration
 ├── init.sql             # MySQL initialization script
 └── .env                 # Environment variables (not committed)
+```
 
 Visit http://localhost:5000/history
 
