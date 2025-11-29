@@ -90,5 +90,20 @@ def history():
     rows = cursor.fetchall()
     return render_template("history.html", history=rows)
 
+@app.route("/health")
+def health():
+    """Health check endpoint for ALB and Kubernetes probes"""
+    try:
+        # Check database connection
+        cursor.execute("SELECT 1")
+        db_status = "healthy"
+    except Error:
+        db_status = "unhealthy"
+    
+    if db_status == "healthy":
+        return {"status": "healthy", "database": "connected"}, 200
+    else:
+        return {"status": "unhealthy", "database": "disconnected"}, 503
+
 if __name__ == "__main__":
     app.run(debug=True)

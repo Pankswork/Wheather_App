@@ -35,6 +35,58 @@ Secrets like DOCKERHUB_USERNAME and DOCKERHUB_TOKEN are stored in GitHub Secrets
 
 🖥️ Part 2 – User Guide (How to Run)
 
+# To run locally
+
+1. Edit .env:
+
+WEATHER_API_KEY=<api_key>
+
+#Local MySQL setup
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_mysql_password_here
+DB_NAME=weather_app
+
+2. Check sql locally:
+
+```bash
+sudo service mysql status
+sudo service mysql start 
+```
+
+3. check database:
+
+```bash
+mysql -u root -p
+mysql> USE weatherdb;
+mysql> SHOW TABLES;
+mysql> DESCRIBE weather_history;
+```
+
+3. Enter venv:
+
+```bash
+source venv/bin/activate
+```
+
+4. Import table and user run:
+
+```bash
+mysql -u root -p weather_app < init.sql
+```
+
+5. Run app:
+
+```bash
+python app.py
+```
+
+6. Access at:
+
+```bash
+http://127.0.0.1:5000
+```
+
 # Weather API key from https://www.weatherapi.com/
 WEATHER_API_KEY=your_api_key_here
 

@@ -18,5 +18,5 @@ ENV FLASK_RUN_HOST=0.0.0.0
 # Expose port
 EXPOSE 5000
 
-# Run the Flask app
-CMD ["flask", "run"]
+# Run the Flask app with Gunicorn (production-ready WSGI server)
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120", "app:app"]
