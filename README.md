@@ -39,6 +39,7 @@ Secrets like DOCKERHUB_USERNAME and DOCKERHUB_TOKEN are stored in GitHub Secrets
 
 1. Edit .env:
 
+``` bash
 WEATHER_API_KEY=<api_key>
 
 #Local MySQL setup
@@ -46,6 +47,7 @@ DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=your_mysql_password_here
 DB_NAME=weather_app
+```
 
 2. Check sql locally:
 
@@ -86,6 +88,7 @@ python app.py
 ```bash
 http://127.0.0.1:5000
 ```
+# To run docker container:
 
 # Weather API key from https://www.weatherapi.com/
 WEATHER_API_KEY=your_api_key_here
@@ -97,7 +100,7 @@ cd <your-repo>
 2. Create a .env file
 
 Copy the example below into a .env file in the root directory:
-
+```bash
 # API key
 WEATHER_API_KEY=your_api_key_here
 
@@ -106,13 +109,15 @@ DB_HOST=db
 DB_USER=app_user
 DB_PASSWORD=your_password_here
 DB_NAME=weather_app
+```
 
 
 ⚠️ Make sure you replace your_api_key_here with your OpenWeather API key.
 
-3. Build and start the containers
+3. Build and start the containers(sudo systemctl stop mysql-if error stop sql container)
 docker-compose up --build
 
+4. docker-compose up
 
 The app will be available at 👉 http://localhost:5000
 
