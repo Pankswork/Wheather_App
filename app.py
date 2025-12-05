@@ -15,6 +15,10 @@ load_dotenv()
 API_KEY = os.getenv("WEATHER_API_KEY")
 BASE_URL = "http://api.weatherapi.com/v1/current.json"
 
+# Validate API key is set
+if not API_KEY:
+    print("WARNING: WEATHER_API_KEY environment variable is not set!")
+
 # MySQL connection using .env variables
 for attempt in range(10):
     try:

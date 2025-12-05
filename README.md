@@ -148,14 +148,58 @@ docker volume rm pythonapp_db_data
 # Rebuild and start again
 docker-compose up --build
 
+🌐 Part 3 – Deployment to AWS
+
+This project includes Terraform infrastructure for deploying to AWS EKS (Elastic Kubernetes Service).
+
+Quick Start:
+```bash
+# Option 1: Use the deployment script
+./deploy.sh
+
+# Option 2: Manual deployment
+# See DEPLOYMENT.md for detailed instructions
+```
+
+📚 For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+Key deployment features:
+- ✅ AWS EKS cluster with auto-scaling
+- ✅ RDS MySQL database
+- ✅ Application Load Balancer (ALB)
+- ✅ Kubernetes deployment with health checks
+- ✅ GitHub Actions CI/CD pipeline
+- ✅ Automated Docker image builds
+
+Prerequisites for deployment:
+- AWS account with appropriate permissions
+- AWS CLI, Terraform, kubectl installed
+- Docker Hub account (or AWS ECR)
+- Weather API key from https://www.weatherapi.com/
+
 📦 Project Structure
 .
-├── app.py               # Flask application
-├── requirements.txt     # Python dependencies
-├── Dockerfile           # Docker image for Flask app
-├── docker-compose.yml   # Compose configuration
-├── init.sql             # MySQL initialization script
-└── .env                 # Environment variables (not committed)
+├── app.py                    # Flask application
+├── requirements.txt          # Python dependencies
+├── Dockerfile                # Docker image for Flask app
+├── docker-compose.yml        # Compose configuration
+├── init.sql                  # MySQL initialization script
+├── .env                      # Environment variables (not committed)
+├── DEPLOYMENT.md             # Detailed deployment guide
+├── deploy.sh                 # Automated deployment script
+├── update-weather-api-key.sh # Script to update Weather API key in K8s
+├── terraform/                # Terraform infrastructure code
+│   ├── provider.tf          # AWS provider configuration
+│   ├── variables.tf         # Variable definitions
+│   ├── terraform.tfvars     # Variable values (customize this)
+│   ├── vpc.tf               # VPC and networking
+│   ├── eks.tf               # EKS cluster and Kubernetes resources
+│   ├── rds.tf               # RDS MySQL database
+│   ├── alb.tf               # Application Load Balancer
+│   ├── security.tf          # Security groups
+│   └── outputs.tf           # Output values
+└── .github/workflows/        # GitHub Actions CI/CD
+    └── ci-cd.yml            # Build and deployment pipeline
 
 Visit 👉 http://localhost:5000/history
 

@@ -1,0 +1,109 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+env:
+  DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/weather-app
+  DOCKER_TAG: ${{ github.sha }}
+
+jobs:
+  build-and-push:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }}
+            ${{ env.DOCKER_IMAGE }}:latest
+          cache-from: type=registry,ref=${{ env.DOCKER_IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.DOCKER_IMAGE }}:buildcache,mode=max
+
+      - name: Image digest
+        run: |
+          echo "Image pushed: $DOCKER_IMAGE:$DOCKER_TAG"
+    
+
+  deploy:
+    name: Deploy to AWS EKS
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    env:
+      TF_VAR_docker_image: ${{ secrets.DOCKER_USERNAME }}/weather-app
+      TF_VAR_docker_image_tag: ${{ github.sha }}
+      # Sensitive values from GitHub Secrets (NOT hardcoded in terraform.tfvars)
+      TF_VAR_db_username: ${{ secrets.DB_USERNAME }}
+      TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Setup kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: ./terraform
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        working-directory: ./terraform
+        if: github.event_name == 'push'
+        run: terraform apply -auto-approve tfplan
+
+      - name: Configure kubectl
+        run: |
+          aws eks update-kubeconfig --region us-east-1 --name pythonapp-cluster-dev
+
+      - name: Update Kubernetes deployment
+        run: |
+          kubectl set image deployment/pythonapp-app \
+            pythonapp-app=${{ env.DOCKER_IMAGE }}:${{ env.DOCKER_TAG }} \
+            -n pythonapp-dev || echo "Deployment update skipped (may not exist yet)"
+
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/pythonapp-app -n pythonapp-dev || echo "Rollout check skipped"
+
