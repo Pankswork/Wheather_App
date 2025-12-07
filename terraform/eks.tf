@@ -38,14 +38,7 @@ resource "aws_security_group" "eks_cluster" {
   description = "Security group for EKS cluster"
   vpc_id      = aws_vpc.main.id
 
-  # Allow HTTPS from nodes
-  ingress {
-    description     = "HTTPS from nodes"
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
-    security_groups = [aws_security_group.eks_nodes.id]
-  }
+
 
   egress {
     description = "Allow all outbound"
@@ -177,14 +170,7 @@ resource "aws_security_group" "eks_nodes" {
   description = "Security group for EKS nodes"
   vpc_id      = aws_vpc.main.id
 
-  # Allow all traffic from cluster
-  ingress {
-    description     = "All traffic from cluster"
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    security_groups = [aws_security_group.eks_cluster.id]
-  }
+
 
   # Allow application port from ALB
   ingress {
@@ -549,5 +535,29 @@ resource "kubernetes_ingress_v1" "app" {
       }
     }
   }
+}
+
+# ============================================================================
+# Security Group Rules (Split to avoid cycles)
+# ============================================================================
+
+resource "aws_security_group_rule" "eks_cluster_ingress_nodes" {
+  description              = "Allow HTTPS from nodes"
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.eks_nodes.id
+  security_group_id        = aws_security_group.eks_cluster.id
+}
+
+resource "aws_security_group_rule" "eks_nodes_ingress_cluster" {
+  description              = "Allow all traffic from cluster control plane"
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = 0
+  protocol                 = "-1"
+  source_security_group_id = aws_security_group.eks_cluster.id
+  security_group_id        = aws_security_group.eks_nodes.id
 }
 
