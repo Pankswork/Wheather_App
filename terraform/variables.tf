@@ -186,7 +186,7 @@ variable "db_port" {
 variable "db_backup_retention_period" {
   description = "RDS backup retention period in days"
   type        = number
-  default     = 7
+  default     = 0
 }
 
 variable "db_backup_window" {
@@ -226,7 +226,7 @@ variable "db_skip_final_snapshot" {
 variable "eks_cluster_version" {
   description = "Kubernetes version for EKS cluster"
   type        = string
-  default     = "1.28"
+  default     = "1.30"
 }
 
 variable "docker_image" {
@@ -354,7 +354,7 @@ variable "enable_cloudtrail" {
 variable "enable_guardduty" {
   description = "Enable AWS GuardDuty for threat detection"
   type        = bool
-  default     = true
+  default     = false
 }
 
 # ============================================================================

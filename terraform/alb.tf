@@ -172,6 +172,14 @@ resource "aws_s3_bucket_policy" "alb_logs" {
       {
         Effect = "Allow"
         Principal = {
+          AWS = data.aws_elb_service_account.main.arn
+        }
+        Action   = "s3:PutObject"
+        Resource = "${aws_s3_bucket.alb_logs.arn}/*"
+      },
+      {
+        Effect = "Allow"
+        Principal = {
           Service = "delivery.logs.amazonaws.com"
         }
         Action   = "s3:PutObject"
@@ -197,5 +205,10 @@ resource "aws_s3_bucket_policy" "alb_logs" {
 # ============================================================================
 # Data Source for AWS Account ID
 # ============================================================================
+# ============================================================================
+# Data Source for AWS Account ID
+# ============================================================================
 # NOTE: Moved to iam.tf to avoid duplicate resource
+
+data "aws_elb_service_account" "main" {}
 
