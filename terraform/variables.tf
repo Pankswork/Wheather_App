@@ -317,3 +317,93 @@ variable "alb_enable_deletion_protection" {
   default     = false
 }
 
+<<<<<<< HEAD
+=======
+# ============================================================================
+# Security Variables
+# ============================================================================
+
+variable "admin_cidr_blocks" {
+  description = "CIDR blocks for administrative access (SSH, etc.)"
+  type        = list(string)
+  default     = ["172.27.12.93/32"]  # Your IP
+}
+
+variable "enable_vpc_flow_logs" {
+  description = "Enable VPC Flow Logs for network monitoring"
+  type        = bool
+  default     = true
+}
+
+variable "flow_log_retention_days" {
+  description = "Retention period for VPC Flow Logs"
+  type        = number
+  default     = 7  # Project scope
+}
+
+variable "enable_network_acls" {
+  description = "Enable Network ACLs for additional security layer"
+  type        = bool
+  default     = true
+}
+
+variable "enable_cloudtrail" {
+  description = "Enable AWS CloudTrail for audit logging"
+  type        = bool
+  default     = true
+}
+
+variable "enable_guardduty" {
+  description = "Enable AWS GuardDuty for threat detection"
+  type        = bool
+  default     = true
+}
+
+# ============================================================================
+# Monitoring Variables (Prometheus/Grafana)
+# ============================================================================
+
+variable "enable_prometheus" {
+  description = "Enable Prometheus monitoring"
+  type        = bool
+  default     = true
+}
+
+variable "enable_grafana" {
+  description = "Enable Grafana dashboards"
+  type        = bool
+  default     = true
+}
+
+variable "grafana_admin_password" {
+  description = "Grafana admin password"
+  type        = string
+  sensitive   = true
+  default     = "598684"
+}
+
+variable "alert_email" {
+  description = "Email for monitoring alerts"
+  type        = string
+  default     = "pankajshakya12345@gmail.com"
+}
+
+variable "prometheus_storage_size" {
+  description = "Prometheus storage size in GB"
+  type        = number
+  default     = 50
+}
+
+variable "prometheus_retention_days" {
+  description = "Prometheus metrics retention in days"
+  type        = number
+  default     = 7  # Project scope
+}
+
+variable "grafana_storage_size" {
+  description = "Grafana storage size in GB"
+  type        = number
+  default     = 10
+}
+
+>>>>>>> master

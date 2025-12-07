@@ -197,6 +197,10 @@ resource "aws_s3_bucket_policy" "alb_logs" {
 # ============================================================================
 # Data Source for AWS Account ID
 # ============================================================================
+<<<<<<< HEAD
 
 data "aws_caller_identity" "current" {}
+=======
+# NOTE: Moved to iam.tf to avoid duplicate resource
+>>>>>>> master
 

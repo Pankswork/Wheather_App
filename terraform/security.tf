@@ -65,6 +65,7 @@ resource "aws_security_group" "ec2" {
     security_groups = [aws_security_group.alb.id]
   }
 
+<<<<<<< HEAD
   # Allow SSH from VPC (adjust for production - should be more restrictive)
   ingress {
     description = "SSH from VPC"
@@ -72,6 +73,15 @@ resource "aws_security_group" "ec2" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [var.vpc_cidr]
+=======
+  # Allow SSH from admin IP only (RESTRICTED)
+  ingress {
+    description = "SSH from admin CIDRs only"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = var.admin_cidr_blocks
+>>>>>>> master
   }
 
   # Allow all outbound traffic
@@ -145,6 +155,7 @@ resource "aws_security_group" "eks_nodes_ssh" {
   description = "Security group for SSH access to EKS nodes"
   vpc_id      = aws_vpc.main.id
 
+<<<<<<< HEAD
   # Allow SSH from VPC (adjust for production - should be more restrictive)
   ingress {
     description = "SSH from VPC"
@@ -152,6 +163,15 @@ resource "aws_security_group" "eks_nodes_ssh" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = [var.vpc_cidr]
+=======
+  # Allow SSH from admin IP only (RESTRICTED)
+  ingress {
+    description = "SSH from admin CIDRs only"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = var.admin_cidr_blocks
+>>>>>>> master
   }
 
   # Allow all outbound traffic
@@ -172,4 +192,41 @@ resource "aws_security_group" "eks_nodes_ssh" {
   }
 }
 
+<<<<<<< HEAD
+=======
+# ============================================================================
+# VPC Endpoints Security Group (Missing from current setup)
+# ============================================================================
+
+resource "aws_security_group" "vpc_endpoints" {
+  name        = "${var.project_name}-vpc-endpoints-sg-${var.environment}"
+  description = "Security group for VPC endpoints"
+  vpc_id      = aws_vpc.main.id
+
+  # Allow HTTPS from private subnets
+  ingress {
+    description = "HTTPS from private subnets"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [for subnet in aws_subnet.private : subnet.cidr_block]
+  }
+
+  egress {
+    description = "Allow all outbound"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name        = "${var.project_name}-vpc-endpoints-sg-${var.environment}"
+    Environment = var.environment
+    Project     = var.project_name
+    ManagedBy   = "Terraform"
+  }
+}
+
+>>>>>>> master
  
