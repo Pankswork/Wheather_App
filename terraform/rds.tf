@@ -19,7 +19,7 @@ resource "aws_db_instance" "main" {
   # Database configuration
   db_name  = var.db_name
   username = var.db_username
-  password = var.db_password != "" ? var.db_password : random_password.db_password.result
+  password = coalesce(var.db_password, random_password.db_password.result)
   port     = var.db_port
 
   # Network configuration
@@ -82,7 +82,7 @@ resource "aws_secretsmanager_secret_version" "db_credentials" {
   secret_id = aws_secretsmanager_secret.db_credentials.id
   secret_string = jsonencode({
     username = var.db_username
-    password = var.db_password != "" ? var.db_password : random_password.db_password.result
+    password = coalesce(var.db_password, random_password.db_password.result)
     engine   = var.db_engine
     host     = aws_db_instance.main.address
     port     = var.db_port
