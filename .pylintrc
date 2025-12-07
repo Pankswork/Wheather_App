@@ -14,7 +14,7 @@ disable=
 
 [REPORTS]
 output-format=text
-files-output=no
+
 reports=no
 score=yes
 
