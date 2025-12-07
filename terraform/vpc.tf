@@ -231,7 +231,7 @@ resource "aws_route_table_association" "database" {
 # S3 Gateway Endpoint - Free, no NAT gateway charges for S3 access
 resource "aws_vpc_endpoint" "s3" {
   vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.s3"
+  service_name      = "com.amazonaws.${var.aws_region}.s3"
   vpc_endpoint_type = "Gateway"
   route_table_ids   = concat(
     aws_route_table.private[*].id,
@@ -249,7 +249,7 @@ resource "aws_vpc_endpoint" "s3" {
 # DynamoDB Gateway Endpoint - Free, no NAT gateway charges for DynamoDB access
 resource "aws_vpc_endpoint" "dynamodb" {
   vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.dynamodb"
+  service_name      = "com.amazonaws.${var.aws_region}.dynamodb"
   vpc_endpoint_type = "Gateway"
   route_table_ids   = concat(
     aws_route_table.private[*].id,
@@ -271,7 +271,7 @@ resource "aws_vpc_endpoint" "dynamodb" {
 # ECR API Endpoint - For pulling container images
 resource "aws_vpc_endpoint" "ecr_api" {
   vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecr.api"
+  service_name        = "com.amazonaws.${var.aws_region}.ecr.api"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
   security_group_ids  = [aws_security_group.vpc_endpoints.id]
@@ -288,7 +288,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
 # ECR DKR Endpoint - Docker registry API
 resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecr.dkr"
+  service_name        = "com.amazonaws.${var.aws_region}.ecr.dkr"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
   security_group_ids  = [aws_security_group.vpc_endpoints.id]
@@ -305,7 +305,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
 # EKS Endpoint - For EKS control plane communication
 resource "aws_vpc_endpoint" "eks" {
   vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.eks"
+  service_name        = "com.amazonaws.${var.aws_region}.eks"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
   security_group_ids  = [aws_security_group.vpc_endpoints.id]
@@ -322,7 +322,7 @@ resource "aws_vpc_endpoint" "eks" {
 # EC2 API Endpoint - For EC2 API calls from nodes
 resource "aws_vpc_endpoint" "ec2" {
   vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ec2"
+  service_name        = "com.amazonaws.${var.aws_region}.ec2"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
   security_group_ids  = [aws_security_group.vpc_endpoints.id]
@@ -339,7 +339,7 @@ resource "aws_vpc_endpoint" "ec2" {
 # CloudWatch Logs Endpoint - For sending logs from EKS nodes
 resource "aws_vpc_endpoint" "cloudwatch_logs" {
   vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.logs"
+  service_name        = "com.amazonaws.${var.aws_region}.logs"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
   security_group_ids  = [aws_security_group.vpc_endpoints.id]
@@ -356,7 +356,7 @@ resource "aws_vpc_endpoint" "cloudwatch_logs" {
 # STS Endpoint - For IAM authentication (IRSA - IAM Roles for Service Accounts)
 resource "aws_vpc_endpoint" "sts" {
   vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.sts"
+  service_name        = "com.amazonaws.${var.aws_region}.sts"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = aws_subnet.private[*].id
   security_group_ids  = [aws_security_group.vpc_endpoints.id]
