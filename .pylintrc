@@ -1,0 +1,26 @@
+[MASTER]
+fail-under=8.0
+ignore=CVS
+ignore-patterns=
+persistent=yes
+load-plugins=
+
+[MESSAGES CONTROL]
+disable=
+    C0111, # missing-docstring
+    C0103, # invalid-name (often too strict for variables)
+    R0903, # too-few-public-methods
+    W0703  # broad-except (catching Exception)
+
+[REPORTS]
+output-format=text
+files-output=no
+reports=no
+score=yes
+
+[BASIC]
+good-names=i,j,k,ex,Run,_
+
+[FORMAT]
+max-line-length=120
+indent-string='    '

@@ -1,0 +1,94 @@
+# ============================================================================
+# AWS GuardDuty Configuration - Threat Detection
+# ============================================================================
+
+resource "aws_guardduty_detector" "main" {
+  count = var.enable_guardduty ? 1 : 0
+  enable = true
+
+  datasources {
+    s3_logs {
+      enable = true
+    }
+    kubernetes {
+      audit_logs {
+        enable = true
+      }
+    }
+  }
+
+  tags = {
+    Name        = "${var.project_name}-guardduty-${var.environment}"
+    Environment = var.environment
+    Project     = var.project_name
+    ManagedBy   = "Terraform"
+  }
+}
+
+# GuardDuty Publishing Destination for alerts
+resource "aws_guardduty_publishing_destination" "main" {
+  count = var.enable_guardduty ? 1 : 0
+  detector_id = aws_guardduty_detector.main[0].id
+  destination_type = "S3"
+
+  s3_destination {
+    bucket_name = aws_s3_bucket.guardduty_alerts[0].bucket
+    kms_key_arn = aws_kms_key.guardduty[0].arn
+  }
+}
+
+resource "aws_s3_bucket" "guardduty_alerts" {
+  count  = var.enable_guardduty ? 1 : 0
+  bucket = "${var.project_name}-guardduty-alerts-${var.environment}-${data.aws_caller_identity.current.account_id}"
+
+  tags = {
+    Name        = "${var.project_name}-guardduty-alerts-${var.environment}"
+    Environment = var.environment
+    Project     = var.project_name
+    ManagedBy   = "Terraform"
+  }
+}
+
+resource "aws_kms_key" "guardduty" {
+  count = var.enable_guardduty ? 1 : 0
+  description             = "KMS key for GuardDuty alerts"
+  deletion_window_in_days = 30
+  enable_key_rotation     = true
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "EnableRootAccount"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+        Action   = "kms:*"
+        Resource = "*"
+      },
+      {
+        Sid    = "AllowGuardDuty"
+        Effect = "Allow"
+        Principal = {
+          Service = "guardduty.amazonaws.com"
+        }
+        Action = [
+          "kms:Decrypt",
+          "kms:DescribeKey",
+          "kms:Encrypt",
+          "kms:GenerateDataKey*",
+          "kms:ReEncrypt*"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+
+  tags = {
+    Name        = "${var.project_name}-guardduty-kms-${var.environment}"
+    Environment = var.environment
+    Project     = var.project_name
+    ManagedBy   = "Terraform"
+  }
+}

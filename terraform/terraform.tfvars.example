@@ -1,0 +1,112 @@
+# ============================================================================
+# Terraform Variables Configuration
+# Copy this file to terraform.tfvars and customize as needed
+# ============================================================================
+
+# AWS Configuration
+aws_region = "us-east-1"
+
+# Project Configuration
+project_name = "pythonapp"
+environment  = "dev"
+
+# VPC Configuration
+vpc_cidr = "10.0.0.0/16"
+
+# Public Subnets (Multi-AZ)
+public_subnets = [
+  {
+    cidr = "10.0.1.0/24"
+    az   = "us-east-1a"
+  },
+  {
+    cidr = "10.0.2.0/24"
+    az   = "us-east-1b"
+  }
+]
+
+# Private Subnets (Multi-AZ)
+private_subnets = [
+  {
+    cidr = "10.0.11.0/24"
+    az   = "us-east-1a"
+  },
+  {
+    cidr = "10.0.12.0/24"
+    az   = "us-east-1b"
+  }
+]
+
+# Database Subnets (Multi-AZ)
+database_subnets = [
+  {
+    cidr = "10.0.21.0/24"
+    az   = "us-east-1a"
+  },
+  {
+    cidr = "10.0.22.0/24"
+    az   = "us-east-1b"
+  }
+]
+
+# Security Configuration
+# ⚠️ IMPORTANT: Change this to your specific IP ranges in production!
+allowed_cidr_blocks = ["0.0.0.0/0"]
+
+# Application Configuration
+app_port = 5000
+
+# EC2 Configuration
+instance_type = "t3.micro"
+key_name      = "your-aws-key-pair-name"  # Update with your AWS key pair name
+# ami_id = ""  # Leave empty to use latest Amazon Linux, or specify custom AMI
+
+# ============================================================================
+# RDS MySQL Configuration
+# ============================================================================
+db_instance_class          = "db.t3.micro"
+db_allocated_storage       = 20
+db_max_allocated_storage   = 100
+db_engine                  = "mysql"
+db_engine_version          = "8.0"
+db_name                    = "pythonapp"
+db_username                = "admin"
+# ⚠️ SECURITY: DO NOT hardcode passwords here!
+# Use environment variables instead: export TF_VAR_db_password="your-password"
+# Or set in CI/CD via GitHub Secrets (see .github/workflows/ci-cd.yml)
+db_password                = ""  # Leave empty, set via TF_VAR_db_password env var
+db_port                    = 3306
+db_backup_retention_period = 7
+db_backup_window           = "03:00-04:00"
+db_maintenance_window      = "mon:04:00-mon:05:00"
+db_multi_az                = false  # Set to true for production
+db_deletion_protection     = false  # Set to true for production
+db_skip_final_snapshot     = true   # Set to false for production
+
+# ============================================================================
+# EKS Configuration
+# ============================================================================
+eks_cluster_version = "1.28"
+
+# Docker image from Docker Hub (format: username/repository)
+docker_image     = "your-dockerhub-username/weather-app"
+docker_image_tag = "latest"
+
+eks_node_instance_types = ["t3.medium"]
+eks_node_desired_size   = 2
+eks_node_min_size       = 1
+eks_node_max_size       = 4
+eks_node_disk_size      = 20
+eks_node_capacity_type  = "ON_DEMAND"  # or "SPOT" for cost savings
+eks_enable_cluster_autoscaler = true
+
+k8s_replicas = 2  # Number of pod replicas
+
+# ============================================================================
+# ALB Configuration
+# ============================================================================
+alb_enable_https               = false  # Set to true and provide certificate_arn for HTTPS
+alb_certificate_arn            = ""     # ARN of SSL certificate (required if HTTPS enabled)
+alb_idle_timeout               = 60
+alb_enable_deletion_protection = false
+
