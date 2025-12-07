@@ -21,12 +21,7 @@ resource "aws_guardduty_detector_feature" "eks_audit_logs" {
   name        = "EKS_AUDIT_LOGS"
   status      = "ENABLED"
 
-  tags = {
-    Name        = "${var.project_name}-guardduty-${var.environment}"
-    Environment = var.environment
-    Project     = var.project_name
-    ManagedBy   = "Terraform"
-  }
+
 }
 
 # GuardDuty Publishing Destination for alerts
