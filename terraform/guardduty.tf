@@ -31,10 +31,8 @@ resource "aws_guardduty_publishing_destination" "main" {
   detector_id = aws_guardduty_detector.main[0].id
   destination_type = "S3"
 
-  s3_destination {
-    bucket_name = aws_s3_bucket.guardduty_alerts[0].bucket
-    kms_key_arn = aws_kms_key.guardduty[0].arn
-  }
+  destination_arn  = aws_s3_bucket.guardduty_alerts[0].arn
+  kms_key_arn      = aws_kms_key.guardduty[0].arn
 }
 
 resource "aws_s3_bucket" "guardduty_alerts" {

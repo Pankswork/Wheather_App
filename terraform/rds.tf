@@ -34,7 +34,7 @@ resource "aws_db_instance" "main" {
   maintenance_window      = var.db_maintenance_window
 
   # Monitoring
-  enabled_cloudwatch_logs_exports = ["error", "general", "slow_query"]
+  enabled_cloudwatch_logs_exports = ["error", "general", "slowquery"]
   monitoring_interval            = 60
   monitoring_role_arn            = aws_iam_role.rds_enhanced_monitoring.arn
 
