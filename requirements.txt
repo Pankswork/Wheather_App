@@ -1,0 +1,8 @@
+flask
+requests
+mysql-connector-python
+python-dotenv
+boto3
+prometheus_client
+pylint
+pytest
