@@ -317,8 +317,6 @@ variable "alb_enable_deletion_protection" {
   default     = false
 }
 
-<<<<<<< HEAD
-=======
 # ============================================================================
 # Security Variables
 # ============================================================================
@@ -406,4 +404,3 @@ variable "grafana_storage_size" {
   default     = 10
 }
 
->>>>>>> master

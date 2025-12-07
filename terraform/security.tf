@@ -65,15 +65,6 @@ resource "aws_security_group" "ec2" {
     security_groups = [aws_security_group.alb.id]
   }
 
-<<<<<<< HEAD
-  # Allow SSH from VPC (adjust for production - should be more restrictive)
-  ingress {
-    description = "SSH from VPC"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
-=======
   # Allow SSH from admin IP only (RESTRICTED)
   ingress {
     description = "SSH from admin CIDRs only"
@@ -81,7 +72,6 @@ resource "aws_security_group" "ec2" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = var.admin_cidr_blocks
->>>>>>> master
   }
 
   # Allow all outbound traffic
@@ -155,15 +145,6 @@ resource "aws_security_group" "eks_nodes_ssh" {
   description = "Security group for SSH access to EKS nodes"
   vpc_id      = aws_vpc.main.id
 
-<<<<<<< HEAD
-  # Allow SSH from VPC (adjust for production - should be more restrictive)
-  ingress {
-    description = "SSH from VPC"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.vpc_cidr]
-=======
   # Allow SSH from admin IP only (RESTRICTED)
   ingress {
     description = "SSH from admin CIDRs only"
@@ -171,7 +152,6 @@ resource "aws_security_group" "eks_nodes_ssh" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = var.admin_cidr_blocks
->>>>>>> master
   }
 
   # Allow all outbound traffic
@@ -192,8 +172,6 @@ resource "aws_security_group" "eks_nodes_ssh" {
   }
 }
 
-<<<<<<< HEAD
-=======
 # ============================================================================
 # VPC Endpoints Security Group (Missing from current setup)
 # ============================================================================
@@ -228,5 +206,4 @@ resource "aws_security_group" "vpc_endpoints" {
   }
 }
 
->>>>>>> master
  

@@ -57,17 +57,17 @@ resource "kubernetes_config_map" "prometheus_config" {
               source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_service_name", "__meta_kubernetes_endpoint_port_name"]
               action = "keep"
               regex = "default;kubernetes;https"
-            }
+            },
             {
               source_labels = ["__meta_kubernetes_endpoint_port_name"]
               target_label = "__metrics_path__"
               replacement = "/metrics"
-            }
+            },
             {
               source_labels = ["__meta_kubernetes_service_name"]
               target_label = "job"
               replacement = "kubernetes-apiservers"
-            }
+            },
             {
               source_labels = ["__meta_kubernetes_namespace"]
               target_label = "namespace"
@@ -89,11 +89,11 @@ resource "kubernetes_config_map" "prometheus_config" {
             {
               action = "labelmap"
               regex = "__meta_kubernetes_node_label_(.+)"
-            }
+            },
             {
               target_label = "__address__"
               replacement = "kubernetes.default.svc:443"
-            }
+            },
             {
               source_labels = ["__meta_kubernetes_node_name"]
               regex = "(.+)"
@@ -112,29 +112,29 @@ resource "kubernetes_config_map" "prometheus_config" {
               source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
               action = "keep"
               regex = "true"
-            }
+            },
             {
               source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
               action = "replace"
               target_label = "__metrics_path__"
               regex = "(.+)"
-            }
+            },
             {
               source_labels = ["__address__", "__meta_kubernetes_pod_annotation_prometheus_io_port"]
               action = "replace"
               regex = "([^:]+)(?::\\d+)?;(\\d+)"
               replacement = "$1:$2"
               target_label = "__address__"
-            }
+            },
             {
               action = "labelmap"
               regex = "__meta_kubernetes_pod_label_(.+)"
-            }
+            },
             {
               source_labels = ["__meta_kubernetes_namespace"]
               action = "replace"
               target_label = "namespace"
-            }
+            },
             {
               source_labels = ["__meta_kubernetes_pod_name"]
               action = "replace"
