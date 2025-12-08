@@ -127,7 +127,7 @@ resource "aws_lb_listener" "app_https" {
 # ============================================================================
 
 resource "aws_s3_bucket" "alb_logs" {
-  bucket = "${var.project_name}-alb-logs-${var.environment}-${data.aws_caller_identity.current.account_id}"
+  bucket = "${var.project_name}-alb-logs-${var.environment}-${data.aws_caller_identity.current.account_id}-v2"
 
   tags = {
     Name        = "${var.project_name}-alb-logs-${var.environment}"

@@ -27,6 +27,7 @@ resource "aws_db_instance" "main" {
   vpc_security_group_ids  = [aws_security_group.rds.id]
   publicly_accessible     = false
   multi_az                = var.db_multi_az
+  performance_insights_enabled = false
 
   # Backup configuration
   backup_retention_period = var.db_backup_retention_period

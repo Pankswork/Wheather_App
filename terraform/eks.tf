@@ -4,7 +4,7 @@
 
 # EKS Cluster IAM Role
 resource "aws_iam_role" "eks_cluster" {
-  name = "${var.project_name}-eks-cluster-role-${var.environment}"
+  name = "${var.project_name}-eks-cluster-role-${var.environment}-v2"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -87,7 +87,7 @@ resource "aws_eks_cluster" "main" {
 
 # CloudWatch Log Group for EKS
 resource "aws_cloudwatch_log_group" "eks_cluster" {
-  name              = "/aws/eks/${var.project_name}-cluster-${var.environment}/cluster"
+  name              = "/aws/eks/${var.project_name}-cluster-${var.environment}-v2/cluster"
   retention_in_days = 7
 
   tags = {
@@ -104,7 +104,7 @@ resource "aws_cloudwatch_log_group" "eks_cluster" {
 
 # EKS Node IAM Role
 resource "aws_iam_role" "eks_nodes" {
-  name = "${var.project_name}-eks-node-role-${var.environment}"
+  name = "${var.project_name}-eks-node-role-${var.environment}-v2"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

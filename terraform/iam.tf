@@ -35,7 +35,7 @@ resource "aws_iam_role" "ec2_instance" {
 # ============================================================================
 
 resource "aws_iam_instance_profile" "ec2_instance" {
-  name = "${var.project_name}-ec2-instance-profile-${var.environment}"
+  name = "${var.project_name}-ec2-instance-profile-${var.environment}-v2"
   role = aws_iam_role.ec2_instance.name
 
   tags = {

@@ -32,7 +32,7 @@ resource "aws_cloudtrail" "main" {
 
 resource "aws_s3_bucket" "cloudtrail_logs" {
   count  = var.enable_cloudtrail ? 1 : 0
-  bucket = "${var.project_name}-cloudtrail-logs-${var.environment}-${data.aws_caller_identity.current.account_id}"
+  bucket = "${var.project_name}-cloudtrail-logs-${var.environment}-${data.aws_caller_identity.current.account_id}-v2"
 
   tags = {
     Name        = "${var.project_name}-cloudtrail-logs-${var.environment}"
