@@ -108,8 +108,10 @@ output "kubectl_config_command" {
   value       = "aws eks update-kubeconfig --region ${var.aws_region} --name ${aws_eks_cluster.main.name}"
 }
 
-
-
+output "kubernetes_namespace" {
+  description = "Kubernetes namespace for the application"
+  value       = kubernetes_namespace.app.metadata[0].name
+}
 # Security Group Outputs
 output "alb_security_group_id" {
   description = "ALB security group ID"

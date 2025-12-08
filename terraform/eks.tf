@@ -292,13 +292,252 @@ resource "aws_eks_addon" "kube_proxy" {
 
 
 
-/*
+data "aws_eks_cluster_auth" "main" {
+  name = aws_eks_cluster.main.name
+}
+
 provider "kubernetes" {
-  host                   = data.aws_eks_cluster.main.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.main.certificate_authority[0].data)
+  host                   = aws_eks_cluster.main.endpoint
+  cluster_ca_certificate = base64decode(aws_eks_cluster.main.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.main.token
 }
-*/
+
+# ============================================================================
+# Kubernetes Namespace
+# ============================================================================
+
+resource "kubernetes_namespace" "app" {
+  metadata {
+    name = "${var.project_name}-${var.environment}"
+    labels = {
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    }
+  }
+}
+
+# ============================================================================
+# Kubernetes Secret for Database Credentials
+# ============================================================================
+
+resource "kubernetes_secret" "db_credentials" {
+  metadata {
+    name      = "db-credentials"
+    namespace = kubernetes_namespace.app.metadata[0].name
+  }
+
+  data = {
+    DB_HOST     = base64encode(aws_db_instance.main.address)
+    DB_PORT     = base64encode(tostring(var.db_port))
+    DB_NAME     = base64encode(var.db_name)
+    DB_USER     = base64encode(var.db_username)
+    DB_PASSWORD = base64encode(coalesce(var.db_password, random_password.db_password.result))
+  }
+
+  type = "Opaque"
+}
+
+# ============================================================================
+# Kubernetes Deployment
+# ============================================================================
+
+resource "kubernetes_deployment" "app" {
+  metadata {
+    name      = "${var.project_name}-app"
+    namespace = kubernetes_namespace.app.metadata[0].name
+    labels = {
+      app       = var.project_name
+      Environment = var.environment
+      Project     = var.project_name
+    }
+  }
+
+  spec {
+    replicas = var.k8s_replicas
+
+    selector {
+      match_labels = {
+        app = var.project_name
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = var.project_name
+        }
+      }
+
+      spec {
+        container {
+          name  = "${var.project_name}-app"
+          image = "${var.docker_image != "" ? var.docker_image : "your-dockerhub-username/pythonapp"}:${var.docker_image_tag}"
+
+          port {
+            container_port = var.app_port
+            protocol       = "TCP"
+          }
+
+          env {
+            name  = "DB_HOST"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.db_credentials.metadata[0].name
+                key  = "DB_HOST"
+              }
+            }
+          }
+
+          env {
+            name  = "DB_PORT"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.db_credentials.metadata[0].name
+                key  = "DB_PORT"
+              }
+            }
+          }
+
+          env {
+            name  = "DB_NAME"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.db_credentials.metadata[0].name
+                key  = "DB_NAME"
+              }
+            }
+          }
+
+          env {
+            name  = "DB_USER"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.db_credentials.metadata[0].name
+                key  = "DB_USER"
+              }
+            }
+          }
+
+          env {
+            name  = "DB_PASSWORD"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.db_credentials.metadata[0].name
+                key  = "DB_PASSWORD"
+              }
+            }
+          }
+
+          env {
+            name  = "ENVIRONMENT"
+            value = var.environment
+          }
+
+          liveness_probe {
+            http_get {
+              path = "/health"
+              port = var.app_port
+            }
+            initial_delay_seconds = 60
+            period_seconds        = 30
+            timeout_seconds       = 5
+            failure_threshold     = 3
+          }
+
+          readiness_probe {
+            http_get {
+              path = "/health"
+              port = var.app_port
+            }
+            initial_delay_seconds = 10
+            period_seconds        = 10
+            timeout_seconds       = 5
+            failure_threshold     = 3
+          }
+
+          resources {
+            requests = {
+              cpu    = "250m"
+              memory = "512Mi"
+            }
+            limits = {
+              cpu    = "1000m"
+              memory = "1Gi"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# ============================================================================
+# Kubernetes Service
+# ============================================================================
+
+resource "kubernetes_service" "app" {
+  metadata {
+    name      = "${var.project_name}-service"
+    namespace = kubernetes_namespace.app.metadata[0].name
+    labels = {
+      app = var.project_name
+    }
+  }
+
+  spec {
+    type = "ClusterIP"
+    selector = {
+      app = var.project_name
+    }
+
+    port {
+      port        = var.app_port
+      target_port = var.app_port
+      protocol    = "TCP"
+    }
+  }
+}
+
+# ============================================================================
+# Kubernetes Ingress (for ALB Integration)
+# ============================================================================
+
+resource "kubernetes_ingress_v1" "app" {
+  metadata {
+    name      = "${var.project_name}-ingress"
+    namespace = kubernetes_namespace.app.metadata[0].name
+    annotations = {
+      "alb.ingress.kubernetes.io/scheme"      = "internet-facing"
+      "alb.ingress.kubernetes.io/target-type" = "ip"
+      "alb.ingress.kubernetes.io/load-balancer-name" = "${var.project_name}-alb-${var.environment}"
+      "alb.ingress.kubernetes.io/listen-ports" = "[{\"HTTP\":80}]"
+    }
+    labels = {
+      app = var.project_name
+    }
+  }
+
+  spec {
+    ingress_class_name = "alb"
+    rule {
+      http {
+        path {
+          path      = "/"
+          path_type = "Prefix"
+          backend {
+            service {
+              name = kubernetes_service.app.metadata[0].name
+              port {
+                number = var.app_port
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 # ============================================================================
 # Kubernetes Namespace
