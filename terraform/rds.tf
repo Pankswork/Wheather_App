@@ -68,7 +68,7 @@ resource "random_password" "db_password" {
 
 # Store DB credentials in AWS Secrets Manager (optional but recommended)
 resource "aws_secretsmanager_secret" "db_credentials" {
-  name = "${var.project_name}-db-credentials-${var.environment}-v2"
+  name = "${var.project_name}-db-credentials-${var.environment}-v3"
 
   tags = {
     Name        = "${var.project_name}-db-credentials-${var.environment}"

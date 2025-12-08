@@ -4,7 +4,7 @@
 
 resource "aws_cloudtrail" "main" {
   count = var.enable_cloudtrail ? 1 : 0
-  name                          = "${var.project_name}-cloudtrail-${var.environment}"
+  name                          = "${var.project_name}-cloudtrail-${var.environment}-v2"
   s3_bucket_name                = aws_s3_bucket.cloudtrail_logs[0].bucket
   s3_key_prefix                 = "cloudtrail-logs/"
   include_global_service_events = true

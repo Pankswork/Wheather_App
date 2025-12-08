@@ -32,7 +32,7 @@ resource "aws_lb" "main" {
 # ============================================================================
 
 resource "aws_lb_target_group" "app" {
-  name        = "${var.project_name}-tg-${var.environment}-v2"
+  name        = "${var.project_name}-tg-${var.environment}-v3"
   port        = var.app_port
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id

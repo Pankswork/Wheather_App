@@ -7,7 +7,7 @@
 # ============================================================================
 
 resource "aws_iam_role" "ec2_instance" {
-  name = "${var.project_name}-ec2-instance-role-${var.environment}"
+  name = "${var.project_name}-ec2-instance-role-${var.environment}-v2"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -111,7 +111,7 @@ resource "aws_iam_role_policy" "ec2_custom" {
 # ============================================================================
 
 resource "aws_iam_role" "rds_enhanced_monitoring" {
-  name = "${var.project_name}-rds-monitoring-role-${var.environment}"
+  name = "${var.project_name}-rds-monitoring-role-${var.environment}-v2"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -150,7 +150,7 @@ resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring" {
 # ============================================================================
 
 resource "aws_iam_role" "lambda_execution" {
-  name = "${var.project_name}-lambda-execution-role-${var.environment}"
+  name = "${var.project_name}-lambda-execution-role-${var.environment}-v2"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
