@@ -201,21 +201,21 @@ resource "aws_route_table" "database" {
 
 # Public Subnet Associations
 resource "aws_route_table_association" "public" {
-  count          = length(aws_subnet.public)
+  count          = length(var.public_subnets)
   subnet_id      = aws_subnet.public[count.index].id
   route_table_id = aws_route_table.public.id
 }
 
 # Private Subnet Associations (FIXED: Each private subnet uses its own route table)
 resource "aws_route_table_association" "private" {
-  count          = length(aws_subnet.private)
+  count          = length(var.private_subnets)
   subnet_id      = aws_subnet.private[count.index].id
   route_table_id = aws_route_table.private[count.index].id
 }
 
 # Database Subnet Associations
 resource "aws_route_table_association" "database" {
-  count          = length(aws_subnet.database)
+  count          = length(var.database_subnets)
   subnet_id      = aws_subnet.database[count.index].id
   route_table_id = aws_route_table.database.id
 }
