@@ -44,9 +44,7 @@ resource "aws_db_instance" "main" {
   skip_final_snapshot = var.db_skip_final_snapshot
   final_snapshot_identifier = var.db_skip_final_snapshot ? null : "${var.project_name}-db-${var.environment}-final-snapshot-${formatdate("YYYY-MM-DD-hhmm", timestamp())}"
 
-  # Performance Insights
-  performance_insights_enabled = true
-  performance_insights_retention_period = 7
+
 
   tags = {
     Name        = "${var.project_name}-db-${var.environment}"
