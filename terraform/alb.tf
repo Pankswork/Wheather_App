@@ -32,11 +32,14 @@ resource "aws_lb" "main" {
 # ============================================================================
 
 resource "aws_lb_target_group" "app" {
-  name        = "${var.project_name}-tg-${var.environment}-v3"
+  name        = "${var.project_name}-tg-${var.environment}"
   port        = var.app_port
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
   target_type = "ip"
+  
+  # ... (rest of the block is unchanged, checking context)
+
 
   health_check {
     enabled             = true
@@ -127,7 +130,7 @@ resource "aws_lb_listener" "app_https" {
 # ============================================================================
 
 resource "aws_s3_bucket" "alb_logs" {
-  bucket = "${var.project_name}-alb-logs-${var.environment}-${data.aws_caller_identity.current.account_id}-v2"
+  bucket = "${var.project_name}-alb-logs-${var.environment}-${data.aws_caller_identity.current.account_id}"
 
   tags = {
     Name        = "${var.project_name}-alb-logs-${var.environment}"

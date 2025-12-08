@@ -21,7 +21,7 @@ resource "aws_flow_log" "main" {
 
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
   count              = var.enable_vpc_flow_logs ? 1 : 0
-  name              = "/aws/vpc/flow-logs/${var.project_name}-${var.environment}-v2"
+  name              = "/aws/vpc/flow-logs/${var.project_name}-${var.environment}"
   retention_in_days = var.flow_log_retention_days
 
   tags = {
@@ -34,7 +34,7 @@ resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
 
 resource "aws_iam_role" "vpc_flow_logs" {
   count = var.enable_vpc_flow_logs ? 1 : 0
-  name  = "${var.project_name}-vpc-flow-logs-${var.environment}-v2"
+  name  = "${var.project_name}-vpc-flow-logs-${var.environment}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
