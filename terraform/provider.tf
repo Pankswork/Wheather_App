@@ -23,6 +23,14 @@ terraform {
       version = "~> 4.0"
     }
   }
+
+  backend "s3" {
+    bucket         = "pythonapp-terraform-state-dev-668227158023"
+    key            = "dev/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "pythonapp-terraform-locks-dev"
+    encrypt        = true
+  }
 }
 
 provider "aws" {

@@ -108,7 +108,7 @@ variable "app_port" {
 variable "instance_type" {
   description = "EC2 instance type"
   type        = string
-  default     = "t3.micro"
+  default     = "m7i-flex.large"
 }
 
 variable "key_name" {
@@ -120,7 +120,7 @@ variable "key_name" {
 variable "ami_id" {
   description = "AMI ID for EC2 instances (leave empty to use latest Amazon Linux)"
   type        = string
-  default     = ""
+  default     = "ami-0ecb62995f68bb549"
 }
 
 # ============================================================================
@@ -244,7 +244,7 @@ variable "docker_image_tag" {
 variable "eks_node_instance_types" {
   description = "Instance types for EKS node group"
   type        = list(string)
-  default     = ["t3.small"]
+  default     = ["m7i-flex.large"]
 }
 
 variable "eks_node_desired_size" {
