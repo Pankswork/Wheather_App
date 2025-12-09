@@ -142,6 +142,11 @@ resource "aws_iam_role_policy_attachment" "eks_container_registry_policy" {
   role       = aws_iam_role.eks_nodes.name
 }
 
+resource "aws_iam_role_policy_attachment" "eks_ebs_csi_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  role       = aws_iam_role.eks_nodes.name
+}
+
 # Additional policy for nodes to access Secrets Manager
 resource "aws_iam_role_policy" "eks_nodes_secrets" {
   name = "${var.project_name}-eks-nodes-secrets-${var.environment}"
@@ -280,6 +285,19 @@ resource "aws_eks_addon" "kube_proxy" {
 
   tags = {
     Name        = "${var.project_name}-kube-proxy-${var.environment}"
+    Environment = var.environment
+    Project     = var.project_name
+    ManagedBy   = "Terraform"
+  }
+}
+
+# EKS EBS CSI Driver Add-on (Required for PVCs)
+resource "aws_eks_addon" "ebs_csi_driver" {
+  cluster_name = aws_eks_cluster.main.name
+  addon_name   = "aws-ebs-csi-driver"
+
+  tags = {
+    Name        = "${var.project_name}-ebs-csi-${var.environment}"
     Environment = var.environment
     Project     = var.project_name
     ManagedBy   = "Terraform"
