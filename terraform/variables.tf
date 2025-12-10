@@ -286,7 +286,7 @@ variable "eks_enable_cluster_autoscaler" {
 variable "k8s_replicas" {
   description = "Number of replicas for Kubernetes deployment"
   type        = number
-  default     = 2
+  default     = 1
 }
 
 # ============================================================================
