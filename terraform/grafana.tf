@@ -185,7 +185,10 @@ resource "kubernetes_persistent_volume_claim" "grafana" {
         storage = "${var.grafana_storage_size}Gi"
       }
     }
+    storage_class_name = "gp3"
   }
+  
+  wait_until_bound = false
 }
 
 # Grafana Service

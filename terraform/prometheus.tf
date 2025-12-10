@@ -253,7 +253,10 @@ resource "kubernetes_persistent_volume_claim" "prometheus" {
         storage = "${var.prometheus_storage_size}Gi"
       }
     }
+    storage_class_name = "gp3"
   }
+  
+  wait_until_bound = false
 }
 
 # Prometheus Service
