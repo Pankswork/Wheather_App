@@ -553,8 +553,8 @@ resource "kubernetes_deployment" "app" {
             }
             initial_delay_seconds = 60
             period_seconds        = 30
-            timeout_seconds       = 5
-            failure_threshold     = 3
+            timeout_seconds       = 10
+            failure_threshold     = 5
           }
 
           readiness_probe {
@@ -562,10 +562,10 @@ resource "kubernetes_deployment" "app" {
               path = "/health"
               port = var.app_port
             }
-            initial_delay_seconds = 10
-            period_seconds        = 10
-            timeout_seconds       = 5
-            failure_threshold     = 3
+            initial_delay_seconds = 20
+            period_seconds        = 15
+            timeout_seconds       = 10
+            failure_threshold     = 5
           }
 
           resources {
