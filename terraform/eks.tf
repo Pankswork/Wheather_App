@@ -551,10 +551,10 @@ resource "kubernetes_deployment" "app" {
               path = "/"
               port = var.app_port
             }
-            initial_delay_seconds = 60
+            initial_delay_seconds = 120
             period_seconds        = 30
-            timeout_seconds       = 30
-            failure_threshold     = 5
+            timeout_seconds       = 60
+            failure_threshold     = 3
           }
 
           readiness_probe {
@@ -562,20 +562,20 @@ resource "kubernetes_deployment" "app" {
               path = "/"
               port = var.app_port
             }
-            initial_delay_seconds = 30
-            period_seconds        = 15
-            timeout_seconds       = 30
-            failure_threshold     = 5
+            initial_delay_seconds = 60
+            period_seconds        = 30
+            timeout_seconds       = 60
+            failure_threshold     = 3
           }
 
           resources {
             requests = {
-              cpu    = "250m"
-              memory = "512Mi"
+              cpu    = "500m"
+              memory = "1Gi"
             }
             limits = {
               cpu    = "1000m"
-              memory = "1Gi"
+              memory = "2Gi"
             }
           }
         }
