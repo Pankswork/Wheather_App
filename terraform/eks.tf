@@ -548,7 +548,7 @@ resource "kubernetes_deployment" "app" {
 
           liveness_probe {
             http_get {
-              path = "/health"
+              path = "/"
               port = var.app_port
             }
             initial_delay_seconds = 60
@@ -559,7 +559,7 @@ resource "kubernetes_deployment" "app" {
 
           readiness_probe {
             http_get {
-              path = "/health"
+              path = "/"
               port = var.app_port
             }
             initial_delay_seconds = 20
