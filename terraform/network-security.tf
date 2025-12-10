@@ -213,6 +213,24 @@ resource "aws_network_acl" "private" {
 
   # Ephemeral ports
   ingress {
+    rule_no    = 115
+    action     = "allow"
+    protocol   = "udp"
+    from_port  = 53
+    to_port    = 53
+    cidr_block = "0.0.0.0/0"
+  }
+
+  ingress {
+    rule_no    = 116
+    action     = "allow"
+    protocol   = "tcp"
+    from_port  = 53
+    to_port    = 53
+    cidr_block = "0.0.0.0/0"
+  }
+
+  ingress {
     rule_no    = 120
     action     = "allow"
     protocol   = "tcp"
