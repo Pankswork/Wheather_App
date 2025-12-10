@@ -129,16 +129,7 @@ resource "kubernetes_deployment" "grafana" {
             }
           }
 
-        init_container {
-          name    = "fix-permissions"
-          image   = "busybox"
-          command = ["sh", "-c", "chown -R 472:472 /var/lib/grafana"]
-          
-          volume_mount {
-            name       = "grafana-storage-volume"
-            mount_path = "/var/lib/grafana/"
-          }
-        }
+
 
           liveness_probe {
             http_get {
@@ -160,6 +151,17 @@ resource "kubernetes_deployment" "grafana" {
             period_seconds        = 10
             timeout_seconds       = 5
             failure_threshold     = 3
+          }
+        }
+
+        init_container {
+          name    = "fix-permissions"
+          image   = "busybox"
+          command = ["sh", "-c", "chown -R 472:472 /var/lib/grafana"]
+          
+          volume_mount {
+            name       = "grafana-storage-volume"
+            mount_path = "/var/lib/grafana/"
           }
         }
 
