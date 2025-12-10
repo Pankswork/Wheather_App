@@ -124,6 +124,15 @@ resource "aws_network_acl" "public" {
     cidr_block = "0.0.0.0/0"
   }
 
+  ingress {
+    rule_no    = 135
+    action     = "allow"
+    protocol   = "udp"
+    from_port  = 1024
+    to_port    = 65535
+    cidr_block = "0.0.0.0/0"
+  }
+
   # Outbound rules
   egress {
     rule_no    = 100
@@ -140,6 +149,24 @@ resource "aws_network_acl" "public" {
     protocol   = "tcp"
     from_port  = 443
     to_port    = 443
+    cidr_block = "0.0.0.0/0"
+  }
+
+  egress {
+    rule_no    = 115
+    action     = "allow"
+    protocol   = "udp"
+    from_port  = 53
+    to_port    = 53
+    cidr_block = "0.0.0.0/0"
+  }
+
+  egress {
+    rule_no    = 116
+    action     = "allow"
+    protocol   = "tcp"
+    from_port  = 53
+    to_port    = 53
     cidr_block = "0.0.0.0/0"
   }
 
@@ -189,6 +216,15 @@ resource "aws_network_acl" "private" {
     rule_no    = 120
     action     = "allow"
     protocol   = "tcp"
+    from_port  = 1024
+    to_port    = 65535
+    cidr_block = "0.0.0.0/0"
+  }
+
+  ingress {
+    rule_no    = 125
+    action     = "allow"
+    protocol   = "udp"
     from_port  = 1024
     to_port    = 65535
     cidr_block = "0.0.0.0/0"
