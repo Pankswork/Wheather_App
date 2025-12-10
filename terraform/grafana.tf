@@ -129,6 +129,17 @@ resource "kubernetes_deployment" "grafana" {
             }
           }
 
+        init_container {
+          name    = "fix-permissions"
+          image   = "busybox"
+          command = ["sh", "-c", "chown -R 472:472 /var/lib/grafana"]
+          
+          volume_mount {
+            name       = "grafana-storage-volume"
+            mount_path = "/var/lib/grafana/"
+          }
+        }
+
           liveness_probe {
             http_get {
               path = "/api/health"

@@ -220,6 +220,17 @@ resource "kubernetes_deployment" "prometheus" {
           }
         }
 
+        init_container {
+          name    = "fix-permissions"
+          image   = "busybox"
+          command = ["sh", "-c", "chown -R 65534:65534 /prometheus"]
+          
+          volume_mount {
+            name       = "prometheus-storage-volume"
+            mount_path = "/prometheus"
+          }
+        }
+
         volume {
           name = "prometheus-config-volume"
           config_map {

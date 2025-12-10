@@ -541,6 +541,11 @@ resource "kubernetes_deployment" "app" {
             value = var.environment
           }
 
+          env {
+            name  = "WEATHER_API_KEY"
+            value = var.weather_api_key
+          }
+
           liveness_probe {
             http_get {
               path = "/health"

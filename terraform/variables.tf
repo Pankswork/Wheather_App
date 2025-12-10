@@ -404,3 +404,10 @@ variable "grafana_storage_size" {
   default     = 10
 }
 
+variable "weather_api_key" {
+  description = "API Key for OpenWeatherMap"
+  type        = string
+  sensitive   = true
+  default     = "dummy_key_for_dev" # Replace with actual key in tfvars/env
+}
+
