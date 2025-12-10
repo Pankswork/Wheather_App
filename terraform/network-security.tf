@@ -196,55 +196,9 @@ resource "aws_network_acl" "private" {
   ingress {
     rule_no    = 100
     action     = "allow"
-    protocol   = "tcp"
-    from_port  = var.app_port
-    to_port    = var.app_port
-    cidr_block = "0.0.0.0/0"
-  }
-
-  ingress {
-    rule_no    = 110
-    action     = "allow"
-    protocol   = "tcp"
-    from_port  = 22
-    to_port    = 22
-    cidr_block = var.admin_cidr_blocks[0]
-  }
-
-  # Ephemeral ports
-  ingress {
-    rule_no    = 115
-    action     = "allow"
-    protocol   = "udp"
-    from_port  = 53
-    to_port    = 53
-    cidr_block = "0.0.0.0/0"
-  }
-
-  ingress {
-    rule_no    = 116
-    action     = "allow"
-    protocol   = "tcp"
-    from_port  = 53
-    to_port    = 53
-    cidr_block = "0.0.0.0/0"
-  }
-
-  ingress {
-    rule_no    = 120
-    action     = "allow"
-    protocol   = "tcp"
-    from_port  = 1024
-    to_port    = 65535
-    cidr_block = "0.0.0.0/0"
-  }
-
-  ingress {
-    rule_no    = 125
-    action     = "allow"
-    protocol   = "udp"
-    from_port  = 1024
-    to_port    = 65535
+    protocol   = "-1"
+    from_port  = 0
+    to_port    = 0
     cidr_block = "0.0.0.0/0"
   }
 
@@ -252,36 +206,9 @@ resource "aws_network_acl" "private" {
   egress {
     rule_no    = 100
     action     = "allow"
-    protocol   = "tcp"
-    from_port  = 80
-    to_port    = 80
-    cidr_block = "0.0.0.0/0"
-  }
-
-  egress {
-    rule_no    = 110
-    action     = "allow"
-    protocol   = "tcp"
-    from_port  = 443
-    to_port    = 443
-    cidr_block = "0.0.0.0/0"
-  }
-
-  egress {
-    rule_no    = 120
-    action     = "allow"
-    protocol   = "tcp"
-    from_port  = 3306
-    to_port    = 3306
-    cidr_block = "0.0.0.0/0"
-  }
-
-  egress {
-    rule_no    = 130
-    action     = "allow"
-    protocol   = "tcp"
-    from_port  = 1024
-    to_port    = 65535
+    protocol   = "-1"
+    from_port  = 0
+    to_port    = 0
     cidr_block = "0.0.0.0/0"
   }
 
@@ -302,29 +229,18 @@ resource "aws_network_acl" "database" {
   ingress {
     rule_no    = 100
     action     = "allow"
-    protocol   = "tcp"
-    from_port  = 3306
-    to_port    = 3306
-    cidr_block = "10.0.0.0/16"
-  }
-
-  # Ephemeral ports
-  ingress {
-    rule_no    = 110
-    action     = "allow"
-    protocol   = "tcp"
-    from_port  = 1024
-    to_port    = 65535
+    protocol   = "-1"
+    from_port  = 0
+    to_port    = 0
     cidr_block = "0.0.0.0/0"
   }
 
-  # Outbound rules
   egress {
     rule_no    = 100
     action     = "allow"
-    protocol   = "tcp"
-    from_port  = 1024
-    to_port    = 65535
+    protocol   = "-1"
+    from_port  = 0
+    to_port    = 0
     cidr_block = "0.0.0.0/0"
   }
 
