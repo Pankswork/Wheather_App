@@ -22,6 +22,8 @@ resource "aws_cloudtrail" "main" {
     }
   }
 
+  depends_on = [aws_s3_bucket_policy.cloudtrail_logs]
+
   tags = {
     Name        = "${var.project_name}-cloudtrail-${var.environment}"
     Environment = var.environment
