@@ -435,11 +435,11 @@ resource "kubernetes_secret" "db_credentials" {
   }
 
   data = {
-    DB_HOST     = base64encode(aws_db_instance.main.address)
-    DB_PORT     = base64encode(tostring(var.db_port))
-    DB_NAME     = base64encode(var.db_name)
-    DB_USER     = base64encode(var.db_username)
-    DB_PASSWORD = base64encode(coalesce(var.db_password, random_password.db_password.result))
+    DB_HOST     = aws_db_instance.main.address
+    DB_PORT     = tostring(var.db_port)
+    DB_NAME     = var.db_name
+    DB_USER     = var.db_username
+    DB_PASSWORD = coalesce(var.db_password, random_password.db_password.result)
   }
 
   type = "Opaque"
