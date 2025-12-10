@@ -553,7 +553,7 @@ resource "kubernetes_deployment" "app" {
             }
             initial_delay_seconds = 60
             period_seconds        = 30
-            timeout_seconds       = 10
+            timeout_seconds       = 30
             failure_threshold     = 5
           }
 
@@ -562,9 +562,9 @@ resource "kubernetes_deployment" "app" {
               path = "/"
               port = var.app_port
             }
-            initial_delay_seconds = 20
+            initial_delay_seconds = 30
             period_seconds        = 15
-            timeout_seconds       = 10
+            timeout_seconds       = 30
             failure_threshold     = 5
           }
 
