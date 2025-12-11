@@ -133,6 +133,22 @@ def save_weather_data(city, temperature, description):
 
 def fetch_weather_from_api(city):
     """Fetch weather data from external API."""
+    # Mock response for dev environment with dummy key
+    if API_KEY == "dummy_key_for_dev":
+        logger.info("Using mock response for dummy_key_for_dev")
+        # Return a mock response object designated by a simple class
+        class MockResponse:
+            status_code = 200
+            def json(self):
+                return {
+                    "location": {"name": city},
+                    "current": {
+                        "temp_c": 20,
+                        "condition": {"text": "Sunny (Mock)"}
+                    }
+                }
+        return MockResponse()
+
     start_time = time.time()
     params = {"key": API_KEY, "q": city}
     try:
