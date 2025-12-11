@@ -114,16 +114,7 @@ resource "aws_security_group" "rds" {
   }
 
   # Allow PostgreSQL (if using PostgreSQL instead of MySQL)
-  ingress {
-    description     = "PostgreSQL access from EC2 instances and EKS nodes"
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [
-      aws_security_group.ec2.id,
-      aws_security_group.eks_nodes.id
-    ]
-  }
+
 
   # No outbound rules needed for RDS (it doesn't initiate connections)
 
