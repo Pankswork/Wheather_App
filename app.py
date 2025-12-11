@@ -119,7 +119,7 @@ def init_db():
         if conn:
             release_db_connection(conn)
 
-# Initialize DB immediately
+# Initialize DB immediately (Force Rebuild)
 init_db()
 
 def put_custom_metric(metric_name, value, unit='Count'):
