@@ -36,7 +36,7 @@ resource "aws_lb_target_group" "app" {
   port        = var.app_port
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
-  target_type = "ip"
+  target_type = "instance"
   
   # ... (rest of the block is unchanged, checking context)
 

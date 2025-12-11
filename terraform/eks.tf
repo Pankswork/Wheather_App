@@ -640,7 +640,7 @@ resource "kubernetes_service" "app" {
   }
 
   spec {
-    type = "ClusterIP"
+    type = "NodePort"
     selector = {
       app = var.project_name
     }
@@ -722,5 +722,13 @@ resource "aws_security_group_rule" "eks_nodes_ingress_cluster" {
   protocol                 = "-1"
   source_security_group_id = aws_security_group.eks_cluster.id
   security_group_id        = aws_security_group.eks_nodes.id
+}
+
+# ============================================================================
+# ALB ASG Attachment (Connects EKS Nodes to ALB)
+# ============================================================================
+resource "aws_autoscaling_attachment" "asg_attachment" {
+  autoscaling_group_name = aws_eks_node_group.main.resources[0].autoscaling_groups[0].name
+  lb_target_group_arn    = aws_lb_target_group.app.arn
 }
 
