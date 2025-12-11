@@ -411,3 +411,9 @@ variable "weather_api_key" {
   default     = "dummy_key_for_dev" # Replace with actual key in tfvars/env
 }
 
+variable "node_port" {
+  description = "NodePort for EKS Service (must be 30000-32767)"
+  type        = number
+  default     = 30000
+}
+

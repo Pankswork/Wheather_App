@@ -648,6 +648,7 @@ resource "kubernetes_service" "app" {
     port {
       port        = var.app_port
       target_port = var.app_port
+      node_port   = var.node_port
       protocol    = "TCP"
     }
   }
