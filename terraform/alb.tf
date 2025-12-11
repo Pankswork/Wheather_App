@@ -32,14 +32,13 @@ resource "aws_lb" "main" {
 # ============================================================================
 
 resource "aws_lb_target_group" "app" {
-  name        = "${var.project_name}-tg-v2-${var.environment}"
+  name_prefix = "pyapp-"
   port        = var.node_port
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
   target_type = "instance"
   
   # ... (rest of the block is unchanged, checking context)
-
 
   health_check {
     enabled             = true
@@ -53,6 +52,10 @@ resource "aws_lb_target_group" "app" {
   }
 
   deregistration_delay = 30
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   tags = {
     Name        = "${var.project_name}-tg-${var.environment}"
