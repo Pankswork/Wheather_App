@@ -255,8 +255,8 @@ resource "aws_security_group" "eks_nodes" {
   # Allow application port from ALB
   ingress {
     description     = "Application port from ALB"
-    from_port       = var.app_port
-    to_port         = var.app_port
+    from_port       = var.node_port
+    to_port         = var.node_port
     protocol        = "tcp"
     security_groups = [aws_security_group.alb.id]
   }
