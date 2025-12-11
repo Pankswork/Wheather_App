@@ -279,6 +279,45 @@ resource "aws_security_group" "eks_nodes" {
 }
 
 # EKS Node Group
+# EKS Launch Template (Required to attach custom Security Groups)
+resource "aws_launch_template" "eks_nodes" {
+  name = "${var.project_name}-node-group-lt-${var.environment}"
+
+  vpc_security_group_ids = compact([
+    aws_security_group.eks_nodes.id,
+    aws_security_group.eks_cluster.id,
+    var.key_name != "" ? aws_security_group.eks_nodes_ssh.id : ""
+  ])
+
+  block_device_mappings {
+    device_name = "/dev/xvda"
+    ebs {
+      volume_size = var.eks_node_disk_size
+      volume_type = "gp3"
+    }
+  }
+
+  key_name = var.key_name != "" ? var.key_name : null
+
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name        = "${var.project_name}-node-${var.environment}"
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    }
+  }
+
+  tags = {
+    Name        = "${var.project_name}-node-group-lt-${var.environment}"
+    Environment = var.environment
+    Project     = var.project_name
+    ManagedBy   = "Terraform"
+  }
+}
+
+# EKS Node Group
 resource "aws_eks_node_group" "main" {
   cluster_name    = aws_eks_cluster.main.name
   node_group_name = "${var.project_name}-node-group-${var.environment}"
@@ -287,7 +326,8 @@ resource "aws_eks_node_group" "main" {
 
   instance_types = var.eks_node_instance_types
   capacity_type  = var.eks_node_capacity_type
-  disk_size      = var.eks_node_disk_size
+  
+  # Disk size and Remote Access moved to Launch Template
 
   scaling_config {
     desired_size = var.eks_node_desired_size
@@ -299,14 +339,14 @@ resource "aws_eks_node_group" "main" {
     max_unavailable = 1
   }
 
+  launch_template {
+    name    = aws_launch_template.eks_nodes.name
+    version = aws_launch_template.eks_nodes.latest_version
+  }
+
   labels = {
     Environment = var.environment
     Project     = var.project_name
-  }
-
-  remote_access {
-    ec2_ssh_key               = var.key_name != "" ? var.key_name : null
-    source_security_group_ids = [aws_security_group.eks_nodes_ssh.id]
   }
 
   depends_on = [
@@ -485,6 +525,8 @@ resource "kubernetes_deployment" "app" {
             container_port = var.app_port
             protocol       = "TCP"
           }
+
+          command = ["gunicorn", "--bind", "0.0.0.0:${var.app_port}", "app:app"]
 
           env {
             name  = "DB_HOST"
