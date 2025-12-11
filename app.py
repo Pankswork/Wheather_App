@@ -135,7 +135,7 @@ def put_custom_metric(metric_name, value, unit='Count'):
                 }
             ]
         )
-    except ClientError as err:
+    except Exception as err:
         logger.error("Failed to put custom metric %s: %s", metric_name, err)
 
 def save_weather_data(city, temperature, description):
