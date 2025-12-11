@@ -108,7 +108,7 @@ variable "app_port" {
 variable "instance_type" {
   description = "EC2 instance type"
   type        = string
-  default     = "m7i-flex.large"
+  default     = "c7i-flex.large"
 }
 
 variable "key_name" {
@@ -244,7 +244,7 @@ variable "docker_image_tag" {
 variable "eks_node_instance_types" {
   description = "Instance types for EKS node group"
   type        = list(string)
-  default     = ["m7i-flex.large"]
+  default     = ["c7i-flex.large"]
 }
 
 variable "eks_node_desired_size" {
@@ -408,7 +408,7 @@ variable "weather_api_key" {
   description = "API Key for OpenWeatherMap"
   type        = string
   sensitive   = true
-  default     = "dummy_key_for_dev" # Replace with actual key in tfvars/env
+  default     = ""
 }
 
 variable "node_port" {

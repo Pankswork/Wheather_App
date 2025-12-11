@@ -519,7 +519,7 @@ resource "kubernetes_deployment" "app" {
       spec {
         container {
           name  = "${var.project_name}-app"
-          image = "${var.docker_image != "" ? var.docker_image : "your-dockerhub-username/pythonapp"}:${var.docker_image_tag}"
+          image = "${var.docker_image != "" ? var.docker_image : "pankswork/weather-app"}:${var.docker_image_tag}"
 
           port {
             container_port = var.app_port
@@ -612,12 +612,12 @@ resource "kubernetes_deployment" "app" {
 
           resources {
             requests = {
-              cpu    = "500m"
-              memory = "1Gi"
+              cpu    = "250m"
+              memory = "256Mi"
             }
             limits = {
-              cpu    = "1000m"
-              memory = "2Gi"
+              cpu    = "500m"
+              memory = "512Mi"
             }
           }
         }
