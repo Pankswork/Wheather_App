@@ -95,6 +95,33 @@ def release_db_connection(conn):
         logger.error("Error closing database connection: %s", err)
         DATABASE_QUERIES.labels(operation='disconnect_error').inc()
 
+def init_db():
+    """Initialize database schema."""
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS weather_history (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                city VARCHAR(255) NOT NULL,
+                temperature VARCHAR(50),
+                description VARCHAR(255),
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        conn.commit()
+        cursor.close()
+        logger.info("Database schema initialized.")
+    except Error as err:
+        logger.error("Failed to initialize database: %s", err)
+    finally:
+        if conn:
+            release_db_connection(conn)
+
+# Initialize DB immediately
+init_db()
+
 def put_custom_metric(metric_name, value, unit='Count'):
     try:
         cloudwatch.put_metric_data(
@@ -133,22 +160,6 @@ def save_weather_data(city, temperature, description):
 
 def fetch_weather_from_api(city):
     """Fetch weather data from external API."""
-    # Mock response for dev environment with dummy key
-    if API_KEY == "dummy_key_for_dev":
-        logger.info("Using mock response for dummy_key_for_dev")
-        # Return a mock response object designated by a simple class
-        class MockResponse:
-            status_code = 200
-            def json(self):
-                return {
-                    "location": {"name": city},
-                    "current": {
-                        "temp_c": 20,
-                        "condition": {"text": "Sunny (Mock)"}
-                    }
-                }
-        return MockResponse()
-
     start_time = time.time()
     params = {"key": API_KEY, "q": city}
     try:
